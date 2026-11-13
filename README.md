@@ -1,13 +1,13 @@
-Modul6_ArsitekturAplikasiAndroid
+Modul9_PenyimpananDataLokalDenganDataStoreRoom
 
 Nama: Charisa Salsabila Larasati
 
 NIM: 24515020111022
 
-Deskripsi: Tugas praktikum Pengembangan Aplikasi Perangkat Bergerak (PAPB) mengenai Arsitektur Aplikasi Android (UI Layer, ViewModel, Repository, & Data Layer)
+Deskripsi: Tugas praktikum Pengembangan Aplikasi Perangkat Bergerak (PAPB) mengenai Penyimpanan Data Lokal Menggunakan Preferences DataStore dan Room Database.
 
-Proyek ini merupakan pengembangan lanjutan dari NavigationLab yang menerapkan prinsip Clean Architecture dan Separation of Concerns pada pengembangan aplikasi Android berbasis Jetpack Compose. Fokus utamanya adalah memisahkan tanggung jawab secara tegas, di mana komponen antarmuka seperti HomeScreen dan DetailScreen hanya bertugas merender state dan menangani interaksi pengguna, sementara logika pengelolaan data didelegasikan sepenuhnya ke ViewModel melalui kontrak antarmuka Repository yang mengabstraksi sumber data lokal in-memory (StudentLocalDataSource).
+Proyek ini merupakan kelanjutan dari pengembangan aplikasi berbasis Clean Architecture yang mengintegrasikan sistem penyimpanan data persisten lokal secara penuh ke dalam aplikasi Android menggunakan Jetpack Compose. Fokus utama dari modul ini adalah menerapkan persistensi data lokal melalui dua pendekatan utama: Room Database untuk mengelola tabel relasional mahasiswa favorit secara reaktif, dan Preferences DataStore untuk menyimpan preferensi pengguna secara asinkron seperti riwayat pencarian terakhir (lastSearchQuery) serta pengaturan tambahan lainnya (sortAscending).
 
-Dalam pengembangannya, aplikasi ini dibangun secara bertahap mulai dari penataan struktur package berlapis, pembuatan model data Student, perancangan repository dengan antarmuka yang bersih, hingga penyusunan UI state dan ViewModel tingkat layar yang aman terhadap perubahan konfigurasi perangkat seperti rotasi layar. Selain itu, integrasi navigasi multi-layar dari Home ke Detail menggunakan argumen studentId dipastikan berjalan mulus bersamaan dengan fungsionalitas tombol Back, Profile, dan About.
+Dalam pengembangannya, arsitektur aplikasi dirancang secara ketat untuk memisahkan lapisan antarmuka (*UI Layer*) dari lapisan penyimpanan (*Data Layer*). Komponen Composable seperti HomeScreen, DetailScreen, dan FavoritesScreen murni hanya bertugas merender UI dan meneruskan aksi pengguna, sementara seluruh akses pembacaan maupun penulisan data ke database SQLite (melalui DAO Room) dan DataStore diisolasi secara rapi di dalam perantara Repository serta dikelola secara aman oleh ViewModel menggunakan Kotlin Coroutines Flow dan StateFlow. 
 
-Sebagai bagian dari pengembangan fitur utama, daftar mahasiswa pada halaman Home dirancang secara interaktif menggunakan komponen LazyColumn dengan penambahan data baru serta implementasi penanganan state error khusus untuk skenario ketika data yang dicari tidak ditemukan.
+Selain itu, fitur utama seperti halaman FavoritesScreen berhasil diintegrasikan ke dalam Navigation Compose, memungkinkan pembaruan data secara realtime secara otomatis (*reactive UI*) tanpa *refresh* manual setiap kali status favorit diubah dari halaman detail. Seluruh struktur kode dan implementasi penyimpanan ini dirancang agar data tetap aman dan bertahan meskipun aplikasi ditutup total atau perangkat mengalami restart.
