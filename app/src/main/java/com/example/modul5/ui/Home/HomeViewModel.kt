@@ -13,6 +13,9 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
+import androidx.lifecycle.ViewModelProvider
+import com.example.modul5.data.preferences.UserPreferencesRepository
+import kotlinx.coroutines.flow.first
 
 data class HomeUiState(
     val students: List<Student> = emptyList(),
@@ -21,13 +24,20 @@ data class HomeUiState(
 )
 
 class HomeViewModel(
-    private val repository: StudentRepository
+    private val repository: StudentRepository,
+    private val preferencesRepository: UserPreferencesRepository
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(HomeUiState())
     val uiState: StateFlow<HomeUiState> = _uiState.asStateFlow()
     private val _searchQuery = MutableStateFlow("")
     val searchQuery: StateFlow<String> = _searchQuery.asStateFlow()
     init {
+        viewModelScope.launch {
+            val savedQuery = preferencesRepository.lastSearchQuery.first()
+            if (savedQuery.isNotBlank()) {
+                _searchQuery.value = savedQuery
+            }
+        }
         observeSearch()
     }
     fun onSearchQueryChange(query: String) {
@@ -40,6 +50,7 @@ class HomeViewModel(
                 .debounce(500)
                 .distinctUntilChanged()
                 .collectLatest { query ->
+                    preferencesRepository.saveLastSearchQuery(query)
                     _uiState.value = _uiState.value.copy(isLoading = true, errorMessage = null)
                     try {
                         val data = if (query.isBlank()) {
@@ -48,12 +59,8 @@ class HomeViewModel(
                             repository.searchStudents(query)
                         }
                         _uiState.value = HomeUiState(students = data)
-                    } catch (e: CancellationException) {
-                        throw e
                     } catch (e: Exception) {
-                        _uiState.value = HomeUiState(
-                            errorMessage = e.message ?: "Pencarian gagal"
-                        )
+                        _uiState.value = HomeUiState(errorMessage = e.message ?: "Pencarian gagal")
                     }
                 }
         }
@@ -81,5 +88,16 @@ class HomeViewModel(
     }
     fun refresh() {
         retry()
+    }
+    companion object {
+        fun factory(
+            repository: StudentRepository,
+            preferencesRepository: UserPreferencesRepository
+        ): ViewModelProvider.Factory = object : ViewModelProvider.Factory {
+            @Suppress("UNCHECKED_CAST")
+            override fun <T : ViewModel> create(modelClass: Class<T>): T {
+                return HomeViewModel(repository, preferencesRepository) as T
+            }
+        }
     }
 }

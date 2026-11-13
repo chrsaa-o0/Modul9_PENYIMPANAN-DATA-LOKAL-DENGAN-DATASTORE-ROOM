@@ -11,6 +11,7 @@ import com.example.modul5.ui.detail.DetailUiState
 @Composable
 fun DetailScreen(
     uiState: DetailUiState,
+    onToggleFavorite: () -> Unit,
     onBack: () -> Unit
 ) {
     Surface(
@@ -91,11 +92,23 @@ fun DetailScreen(
                             Spacer(modifier = Modifier.height(4.dp))
                             Text(text = "Nama: ${student.name}", style = MaterialTheme.typography.titleMedium)
                             Spacer(modifier = Modifier.height(4.dp))
-                            // Diubah dari program & year menjadi email & university sesuai Modul 7
                             Text(text = "Email: ${student.email}", style = MaterialTheme.typography.bodyMedium)
                             Spacer(modifier = Modifier.height(4.dp))
                             Text(text = "University: ${student.university}", style = MaterialTheme.typography.bodyMedium)
                         }
+                    }
+                    Spacer(modifier = Modifier.height(16.dp))
+                    Button(
+                        onClick = onToggleFavorite,
+                        modifier = Modifier.fillMaxWidth(),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = if (uiState.isFavorite) MaterialTheme.colorScheme.error
+                            else MaterialTheme.colorScheme.primary
+                        )
+                    ) {
+                        Text(
+                            text = if (uiState.isFavorite) "Hapus dari Favorit" else "Simpan ke Favorit"
+                        )
                     }
                 }
             }

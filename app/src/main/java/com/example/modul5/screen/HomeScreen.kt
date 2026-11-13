@@ -20,6 +20,7 @@ fun HomeScreen(
     onStudentClick: (Int) -> Unit,
     onOpenProfile: () -> Unit,
     onOpenAbout: () -> Unit,
+    onOpenFavorites: () -> Unit,
     onRetry: () -> Unit,
     onRefresh: () -> Unit
 ) {
@@ -31,28 +32,32 @@ fun HomeScreen(
     ) {
         Row(
             modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween,
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Row(
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
-                verticalAlignment = Alignment.CenterVertically
+            Button(
+                onClick = onRefresh,
+                contentPadding = PaddingValues(horizontal = 10.dp, vertical = 8.dp)
             ) {
-                Button(
-                    onClick = onRefresh,
-                    contentPadding = PaddingValues(horizontal = 12.dp, vertical = 8.dp)
-                ) {
-                    Text(
-                        text = "⟳",
-                        fontSize = 22.sp
-                    )
-                }
-                Button(onClick = onOpenProfile) {
-                    Text("Profile")
-                }
+                Text(text = "⟳", fontSize = 20.sp)
             }
-            Button(onClick = onOpenAbout) {
+            Button(
+                onClick = onOpenProfile,
+                contentPadding = PaddingValues(horizontal = 10.dp, vertical = 8.dp)
+            ) {
+                Text("Profile")
+            }
+            Button(
+                onClick = onOpenAbout,
+                contentPadding = PaddingValues(horizontal = 10.dp, vertical = 8.dp)
+            ) {
                 Text("About")
+            }
+            Button(
+                onClick = onOpenFavorites,
+                contentPadding = PaddingValues(horizontal = 10.dp, vertical = 8.dp)
+            ) {
+                Text("Favorit")
             }
         }
 
